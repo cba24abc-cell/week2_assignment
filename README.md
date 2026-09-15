@@ -8,6 +8,6 @@ The raw dataset is not included in this repository because its size exceeds the 
 Folder structure:
 
 images/
-├── cats/
-├── dogs/
-└── pandas/
+├── cat/
+├── dog/
+└── panda/

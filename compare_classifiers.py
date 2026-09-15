@@ -11,11 +11,20 @@ from sklearn.metrics import (
     confusion_matrix
 )
 
-# Load Setting A features
+# ==========================
+# Load Setting A Features
+# ==========================
+
 with open("features_A.pkl", "rb") as f:
     X, y = pickle.load(f)
 
-# Train/Test Split
+print("Total samples:", len(X))
+print("Classes:", set(y))
+
+# ==========================
+# 80/20 Train-Test Split
+# ==========================
+
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -24,7 +33,10 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Models required by assignment
+# ==========================
+# Models
+# ==========================
+
 models = {
     "Linear SVM": LinearSVC(max_iter=10000),
     "k-NN (k=5)": KNeighborsClassifier(n_neighbors=5)
@@ -32,40 +44,47 @@ models = {
 
 results = []
 
+# ==========================
+# Training & Evaluation
+# ==========================
+
 for name, model in models.items():
 
-    print("\n" + "=" * 50)
-    print(name)
-    print("=" * 50)
-
-    # Train
     model.fit(X_train, y_train)
 
-    # Predict
-    predictions = model.predict(X_test)
+    preds = model.predict(X_test)
 
-    # Accuracy
-    accuracy = accuracy_score(y_test, predictions)
+    accuracy = accuracy_score(y_test, preds)
+
+    print("\n" + "=" * 60)
+    print(name)
+    print("=" * 60)
 
     print(f"\nAccuracy: {accuracy:.4f}")
 
-    # Classification Report
     print("\nClassification Report:")
-    print(classification_report(y_test, predictions))
+    print(classification_report(y_test, preds))
 
-    # Confusion Matrix
     print("\nConfusion Matrix:")
-    print(confusion_matrix(y_test, predictions))
+    print(confusion_matrix(y_test, preds))
 
     results.append([name, accuracy])
 
+# ==========================
 # Summary Table
+# ==========================
+
 summary = pd.DataFrame(
     results,
     columns=["Classifier", "Accuracy"]
 )
 
-print("\n" + "=" * 50)
-print("ACCURACY COMPARISON")
-print("=" * 50)
+print("\n" + "=" * 60)
+print("SUMMARY TABLE")
+print("=" * 60)
 print(summary)
+
+# Optional: save results
+summary.to_csv("classifier_comparison.csv", index=False)
+
+print("\nResults saved to classifier_comparison.csv")
